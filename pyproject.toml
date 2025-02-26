@@ -12,13 +12,6 @@ dependencies = [
     "psycopg2-binary>=2.9.10",
 ]
 
-[project.scripts]
-devmons = "devmons:main"
-
-[build-system]
-requires = ["uv"]
-build-backend = "uv"
-
 [dependency-groups]
 dev = [
     "black>=25.1.0",
@@ -27,3 +20,10 @@ dev = [
     "pytest>=8.3.4",
     "ruff>=0.9.7",
 ]
+
+[project.scripts]
+devmons = "devmons:main"
+
+[build-system]
+requires = ["uv"]
+build-backend = "uv"

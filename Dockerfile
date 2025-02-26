@@ -22,8 +22,9 @@ RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-dev --no-install-project
 
-COPY . /src
-WORKDIR /src
+COPY . /tmp
+WORKDIR /tmp
+
 RUN --mount=type=cache,target=/root/.cache \
     uv sync --locked --no-dev --no-editable
 
@@ -34,6 +35,6 @@ RUN apt-get update --fix-missing && \
     apt-get install -y --no-install-recommends && \
     apt-get clean
 
-COPY --from=build --chown=app:app /app /app
+COPY --from=build /app /app
 
 WORKDIR /app

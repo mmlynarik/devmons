@@ -1,7 +1,11 @@
-from fastapi import APIRouter, FastAPI
+from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
 app = FastAPI()
 
 
-a = "ddd"
+class Coin(BaseModel):
+    id: str
+    name: str
+    description: str

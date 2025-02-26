@@ -1,7 +1,7 @@
 [project]
 name = "devmons"
 version = "0.1.0"
-description = "Add your description here"
+description = "Devmons interview project"
 readme = "README.md"
 authors = [
     { name = "Miroslav Mlynarik", email = "miroslav.mlynarik@gmail.com" }

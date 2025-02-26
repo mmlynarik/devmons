@@ -28,3 +28,20 @@ devmons = "devmons:main"
 [build-system]
 requires = ["uv"]
 build-backend = "uv"
+
+[tool.ruff]
+line-length = 110
+exclude = ["experimental/", ".venv"]
+
+[tool.black]
+line-length = 110
+
+[tool.isort]
+profile = "black"
+line_length = 110
+
+[tool.mypy]
+ignore_missing_imports = true
+check_untyped_defs = true
+strict_equality = false
+exclude = ["^notebooks/", "migrations/"]

@@ -7,7 +7,6 @@ RUN apt-get update --fix-missing && \
     ca-certificates \
     libgmp-dev \
     libssl-dev \
-    python3-dev \
     libpq-dev && \
     apt-get clean
 

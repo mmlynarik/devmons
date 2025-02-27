@@ -2,17 +2,20 @@
 
 
 ##### DEV & DEPLOY #####
-image:
-	docker build -t app:latest .
+idev:
+	docker build --target dev -t app-dev:latest .
+
+iprod:
+	docker build --target prod -t app-prod:latest .
 
 bash:
 	docker run -it --rm --name app app bash
 
 dev:
-	fastapi run --host 0.0.0.0 --port 8000 src/devmons/app.py
+	docker run --rm -p 8000:8000 --name app-dev app-dev:latest
 
 prod:
-	docker run --rm -p 8000:8000 --name app app:latest
+	docker run --rm -p 8000:8000 --name app-prod app-prod:latest
 
 ##### DEV DATABASE MNGM ####
 db:

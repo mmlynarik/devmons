@@ -1,4 +1,6 @@
-FROM python:3.12.5-slim AS build
+FROM python:3.12.5-slim AS base
+
+WORKDIR /app
 
 RUN apt-get update --fix-missing && \
     apt-get install -y --no-install-recommends \
@@ -11,7 +13,6 @@ RUN apt-get update --fix-missing && \
     apt-get clean
 
 ENV PYTHONUNBUFFERED=True
-ENV UV_PROJECT_ENVIRONMENT=/app
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
@@ -20,19 +21,19 @@ RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-dev --no-install-project
 
-COPY . /tmp
-WORKDIR /tmp
+COPY . /app
 
 RUN --mount=type=cache,target=/root/.cache \
-    uv sync --locked --no-dev --no-editable
+    uv sync --locked --no-dev
+
+ENV PATH="/app/.venv/bin:$PATH"
 
 
-FROM python:3.12.5-slim
+FROM base AS dev
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --dev
+CMD ["fastapi", "dev", "--host", "0.0.0.0", "--port", "8000", "src/devmons/app.py"]
 
-WORKDIR /app
 
-COPY --from=build /app /app
-
-ENV PATH=/app/bin:$PATH
-
-CMD ["fastapi", "run", "--host", "0.0.0.0", "--port", "8000", "lib/python3.12/site-packages/devmons/app.py"]
+FROM base AS prod
+CMD ["fastapi", "run", "--host", "0.0.0.0", "--port", "8000", "src/devmons/app.py"]

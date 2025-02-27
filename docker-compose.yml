@@ -21,8 +21,8 @@ services:
       target: dev
     ports:
       - 8000:8000
-    # volumes:
-    #   - .:/app
+    volumes:
+      - ./src/:/app/src/
     depends_on:
       - postgres
     networks:

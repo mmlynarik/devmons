@@ -7,10 +7,16 @@ test:
 
 
 image:
-	docker build --build-arg HTTP_PROXY=$$HTTP_PROXY --build-arg HTTPS_PROXY=$$HTTP_PROXY -t nlp:latest .
+	docker build -t app:latest .
 
 bash:
-	docker run -it --name nlp nlp bash
+	docker run -it --rm --name app app bash
+
+dev:
+	fastapi run --host 0.0.0.0 --port 8000 src/devmons/app.py
+
+app:
+	docker run --rm -p 8000:8000 --name app app:latest
 
 ##### DEV DATABASE MNGM ####
 db:

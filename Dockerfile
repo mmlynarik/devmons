@@ -12,7 +12,6 @@ RUN apt-get update --fix-missing && \
 
 ENV PYTHONUNBUFFERED=True
 ENV UV_PROJECT_ENVIRONMENT=/app
-ENV UV_PREVIEW=1
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
@@ -27,17 +26,17 @@ WORKDIR /tmp
 RUN --mount=type=cache,target=/root/.cache \
     uv sync --locked --no-dev --no-editable
 
-ENV PATH=/app/bin:$PATH
+
+FROM python:3.12.5-slim
+
+RUN apt-get update --fix-missing && \
+    apt-get install -y --no-install-recommends \
+    curl
+
 WORKDIR /app
 
-# DEV 
-FROM python:3.12.5-slim as dev
 COPY --from=build /app /app
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --dev
-CMD ["fastapi", "dev", "--host", "0.0.0.0", "--port", "8000", "src/devmons/app.py"]
 
-# PROD
-FROM python:3.12.5-slim as prod
-COPY --from=build /app /app
-CMD ["fastapi", "run", "--host", "0.0.0.0", "--port", "8000", "src/devmons/app.py"]
+ENV PATH=/app/bin:$PATH
+
+CMD ["fastapi", "run", "--host", "0.0.0.0", "--port", "8000", "lib/python3.12/site-packages/devmons/app.py"]

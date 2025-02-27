@@ -6,7 +6,7 @@ app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to the Invoice Reader API!"}
+    return {"message": "Welcome to the FastAPI app!"}
 
 
 class Coina(BaseModel):

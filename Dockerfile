@@ -13,6 +13,7 @@ RUN apt-get update --fix-missing && \
     apt-get clean
 
 ENV PYTHONUNBUFFERED=True
+ENV UV_COMPILE_BYTECODE=1
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 

@@ -28,13 +28,17 @@ WORKDIR /tmp
 RUN --mount=type=cache,target=/root/.cache \
     uv sync --locked --no-dev --no-editable
 
-
-FROM python:3.12.5-slim
-
-RUN apt-get update --fix-missing && \
-    apt-get install -y --no-install-recommends && \
-    apt-get clean
-
-COPY --from=build /app /app
-
+ENV PATH=/app/bin:$PATH
 WORKDIR /app
+
+# DEV 
+FROM python:3.12.5-slim as dev
+COPY --from=build /app /app
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --dev
+CMD ["fastapi", "dev", "--host", "0.0.0.0", "--port", "8000", "src/devmons/app.py"]
+
+# PROD
+FROM python:3.12.5-slim as prod
+COPY --from=build /app /app
+CMD ["fastapi", "run", "--host", "0.0.0.0", "--port", "8000", "src/devmons/app.py"]

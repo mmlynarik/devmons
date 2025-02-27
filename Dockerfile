@@ -29,10 +29,6 @@ RUN --mount=type=cache,target=/root/.cache \
 
 FROM python:3.12.5-slim
 
-RUN apt-get update --fix-missing && \
-    apt-get install -y --no-install-recommends \
-    curl
-
 WORKDIR /app
 
 COPY --from=build /app /app

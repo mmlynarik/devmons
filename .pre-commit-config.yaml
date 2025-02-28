@@ -16,7 +16,7 @@ repos:
     hooks:
       - id: mypy
         args: [--config-file=pyproject.toml]
-        additional_dependencies: [pandera==0.17.2]
+        additional_dependencies: [pandera==0.17.2, types-requests, types-pytz]
 
   - repo: https://github.com/pycqa/isort
     rev: 5.12.0

@@ -18,7 +18,7 @@ prod:
 	docker run --rm -p 8000:8000 --name app-prod app-prod:latest
 
 app:
-	docker-compose -f docker-compose-dev.yml up
+	docker-compose -f docker-compose-dev.yaml up
 
 ##### DEV DATABASE MNGM ####
 db:

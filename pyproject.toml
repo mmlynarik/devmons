@@ -10,6 +10,8 @@ requires-python = "==3.12.*"
 dependencies = [
     "fastapi[standard]>=0.115.8",
     "psycopg2-binary>=2.9.10",
+    "requests>=2.32.3",
+    "sqlalchemy>=2.0.38",
 ]
 
 [dependency-groups]

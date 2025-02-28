@@ -17,6 +17,9 @@ dev:
 prod:
 	docker run --rm -p 8000:8000 --name app-prod app-prod:latest
 
+app:
+	docker-compose -f docker-compose-dev.yml up
+
 ##### DEV DATABASE MNGM ####
 db:
 	docker run -d --name postgres -e POSTGRES_USER=$${POSTGRES_USER} -e POSTGRES_PASSWORD=$${POSTGRES_PASSWORD} -e POSTGRES_HOST_AUTH_METHOD=trust -p 5432:5432 -v postgres:/var/lib/postgresql/data postgres:15

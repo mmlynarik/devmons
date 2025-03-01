@@ -15,7 +15,6 @@ services:
       - app-network
 
   app:
-    image: app-dev
     build:
       context: .
       target: dev

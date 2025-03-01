@@ -17,8 +17,11 @@ dev:
 prod:
 	docker run --rm -p 8000:8000 --name app-prod app-prod:latest
 
-app:
+appb:
 	docker-compose up --build
+
+app:
+	docker-compose up
 
 ##### DEV DATABASE MNGM ####
 db:

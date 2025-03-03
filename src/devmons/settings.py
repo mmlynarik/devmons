@@ -4,7 +4,7 @@ import os
 CG_API_URL = "https://api.coingecko.com/api/v3"
 
 # DB
-BACKEND_DB_HOST = os.getenv("POSTGRES_SERVER", "postgres")
+BACKEND_DB_HOST = "postgres"  # Must match postgres service name in docker-compose.yml
 BACKEND_DB_NAME = os.getenv("POSTGRES_DB", "postgres")
 BACKEND_DB_USER = os.getenv("POSTGRES_USER", "postgres")
 BACKEND_DB_PASSWORD = os.getenv("POSTGRES_PASSWORD", "postgres")

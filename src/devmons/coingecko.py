@@ -1,17 +1,28 @@
+from collections import defaultdict
+from dataclasses import dataclass
+
 import requests
-from pydantic import BaseModel
 
 from devmons.settings import CG_API_URL
 
 
-class CGCoin(BaseModel):
+@dataclass
+class CGCoin:
     id: str
     name: str
     symbol: str
 
 
-def verify_coin_symbol(symbol: str) -> bool:
+@dataclass
+class CGCoinCreate:
+    symbol: str
+
+
+def get_coins_data(symbol: str) -> list[CGCoin]:
     url = CG_API_URL + "/coins/list"
-    res = requests.get(url).json()
-    api_symbols = {coin["symbol"] for coin in res}
-    return symbol in api_symbols
+    res: list[dict] = requests.get(url).json()
+    coins = defaultdict(list)
+    for coin in res:
+        coins[coin["symbol"]].append(CGCoin(**coin))
+
+    return coins[symbol]

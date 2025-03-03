@@ -21,12 +21,12 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-@app.get("/api/", response_model=None)
+@app.get("/api/")
 async def root():
     return {"message": "Welcome to the FastAPI app!"}
 
 
-@app.post("/api/coins", response_model=None)
+@app.post("/api/coins")
 async def add_new_coins(
     coin: CGCoinCreate, session: Annotated[Session, Depends(get_session)]
 ) -> list[CGCoin]:

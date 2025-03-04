@@ -11,7 +11,7 @@ After cloning the repository, the virtual environment, along with all dependenci
 uv sync
 ```
 
-## 4. Run the FastAPI app
+## 2. Run the FastAPI app
 The API application can be run using the docker compose command, which spins up two containers - the postgres database and the python application:
 ```
 docker-compose up

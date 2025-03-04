@@ -1,4 +1,3 @@
-from collections import defaultdict
 from dataclasses import dataclass
 
 import requests
@@ -25,10 +24,11 @@ class InvalidCoinSymbol(Exception):
 def get_coins_data(symbol: str) -> list[CGCoin]:
     url = CG_API_URL + "/coins/list"
     res: list[dict] = requests.get(url).json()
-    coins = defaultdict(list)
+    coins = []
     for coin in res:
-        coins[coin["symbol"]].append(CGCoin(**coin))
+        if coin["symbol"] == symbol:
+            coins.append(CGCoin(**coin))
 
-    if symbol not in coins:
+    if not coins:
         raise InvalidCoinSymbol(f"Symbol {symbol} is not a valid coin.")
-    return coins[symbol]
+    return coins

@@ -47,3 +47,7 @@ venv:
 
 venvd:
 	rm -rf .venv
+
+uv:
+	curl -LsSf https://astral.sh/uv/install.sh | sh
+

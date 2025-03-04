@@ -1,4 +1,4 @@
-.PHONY: db,venv, venvd, ssh, git
+.PHONY: venv, venvd, idev, iprod, bash, dev, prod, appb, app
 
 
 ##### DEV & DEPLOY #####

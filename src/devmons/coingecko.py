@@ -29,6 +29,6 @@ def get_coins_data(symbol: str) -> list[CGCoin]:
     for coin in res:
         coins[coin["symbol"]].append(CGCoin(**coin))
 
-    if not coins:
+    if symbol not in coins:
         raise InvalidCoinSymbol(f"Symbol {symbol} is not a valid coin.")
     return coins[symbol]

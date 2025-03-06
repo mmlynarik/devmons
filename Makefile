@@ -2,14 +2,8 @@
 
 
 ##### DEV & DEPLOY #####
-idev:
-	docker build --target dev -t app-dev:latest .
-
-bash:
-	docker run -it --rm --name app app-dev:latest bash
-
 dev:
-	docker run --rm -p 8000:8000 --name app-dev app-dev:latest
+	fastapi run --host "0.0.0.0" --port 8000 src/devmons/app.py
 
 appb:
 	docker-compose up --build
@@ -26,4 +20,3 @@ venvd:
 
 uv:
 	curl -LsSf https://astral.sh/uv/install.sh | sh
-

@@ -32,6 +32,8 @@ async def add_new_coins(
 ) -> list[CGCoin]:
     repo = CGCoinRepository(session)
     try:
-        return add_coins(coin.symbol, repo, session)
+        coins = add_coins(coin.symbol, repo, session)
     except InvalidCoinSymbol:
         raise HTTPException(status_code=422, detail=f"Coin symbol {coin.symbol} does not exist.")
+
+    return coins

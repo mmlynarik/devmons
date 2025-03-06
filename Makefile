@@ -6,7 +6,7 @@ dev:
 	fastapi run --host "0.0.0.0" --port 8000 src/devmons/app.py
 
 build:
-	docker-compose up --build
+	docker-compose build
 
 run:
 	docker-compose up

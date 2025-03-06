@@ -17,3 +17,8 @@ The API application can be run using the docker compose command, which spins up 
 docker-compose up
 ```
 
+## 3. API docs and usage:
+API docs can be found at
+```
+http://127.0.0.1:8000/docs
+```

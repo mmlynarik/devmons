@@ -5,10 +5,10 @@
 dev:
 	fastapi run --host "0.0.0.0" --port 8000 src/devmons/app.py
 
-appb:
+build:
 	docker-compose up --build
 
-app:
+run:
 	docker-compose up
 
 ##### REPOSITORY & VENV #####

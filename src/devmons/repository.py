@@ -14,3 +14,6 @@ class CGCoinRepository:
         self.session.add(coin)
         LOGGER.info("New coin added to database: %s", coin)
         return coin
+
+    def exists(self, symbol: str) -> bool:
+        return bool(self.session.query(CGCoin).filter(CGCoin.symbol == symbol).all())

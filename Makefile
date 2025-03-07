@@ -3,7 +3,7 @@
 
 ##### DEV & DEPLOY #####
 dev:
-	fastapi run --host "0.0.0.0" --port 8000 src/devmons/app.py
+	fastapi run --host "0.0.0.0" --port 8000 --reload src/devmons/app.py
 
 build:
 	docker-compose build

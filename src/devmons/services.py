@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from devmons.coingecko import CGCoin, get_coins_data
+from devmons.coingecko import CGCoin, CoinAlreadyExists, get_coins_data
 from devmons.repository import CGCoinRepository
 
 
@@ -10,4 +10,9 @@ def add_coins(symbol: str, repo: CGCoinRepository, session: Session) -> list[CGC
         for coin in coins:
             repo.add(coin)
         session.commit()
-    return coins
+        return coins
+    raise CoinAlreadyExists(f"Symbol {symbol} already exists in the database")
+
+
+def get_coins(symbol: str, repo: CGCoinRepository) -> list[CGCoin]:
+    return repo.get(symbol)

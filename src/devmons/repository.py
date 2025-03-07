@@ -17,3 +17,6 @@ class CGCoinRepository:
 
     def exists(self, symbol: str) -> bool:
         return bool(self.session.query(CGCoin).filter(CGCoin.symbol == symbol).all())
+
+    def get(self, symbol: str) -> list[CGCoin]:
+        return self.session.query(CGCoin).filter(CGCoin.symbol == symbol).all()

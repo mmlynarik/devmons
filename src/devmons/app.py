@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
-from devmons.coingecko import CGCoin, CGCoinCreate, CoinAlreadyExists, InvalidCoinSymbol
+from devmons.coingecko import CGCoin, CGCoinCreate, CoinAlreadyExists, CoinNotFound, InvalidCoinSymbol
 from devmons.db import get_session
 from devmons.orm import create_db_and_tables, start_orm_mappers
 from devmons.repository import CGCoinRepository
@@ -26,15 +26,15 @@ async def root():
     return {"message": "Welcome to the FastAPI app!"}
 
 
-@app.get("/api/coin/symbol")
+@app.get("/api/coins/symbol")
 async def get_coins_from_symbol(
     symbol: str, session: Annotated[Session, Depends(get_session)]
 ) -> list[CGCoin]:
     repo = CGCoinRepository(session)
     try:
         coins = get_coins(symbol, repo)
-    except InvalidCoinSymbol:
-        raise HTTPException(status_code=422, detail=f"Coin symbol {symbol} does not exist.")
+    except CoinNotFound:
+        raise HTTPException(status_code=422, detail=f"Coin symbol {symbol} not found in database")
 
     return coins
 
@@ -47,8 +47,8 @@ async def add_new_coins(
     try:
         coins = add_coins(coin.symbol, repo, session)
     except InvalidCoinSymbol:
-        raise HTTPException(status_code=422, detail=f"Coin symbol {coin.symbol} does not exist")
+        raise HTTPException(status_code=422, detail=f"Coin symbol {coin.symbol} is not valid")
     except CoinAlreadyExists:
-        raise HTTPException(status_code=422, detail=f"Coin symbol {coin.symbol} already exists")
+        raise HTTPException(status_code=422, detail=f"Coin symbol {coin.symbol} already exists in database")
 
     return coins

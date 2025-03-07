@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from devmons.coingecko import CGCoin, CoinAlreadyExists, get_coins_data
+from devmons.coingecko import CGCoin, CoinAlreadyExists, CoinNotFound, get_coins_data
 from devmons.repository import CGCoinRepository
 
 
@@ -15,4 +15,7 @@ def add_coins(symbol: str, repo: CGCoinRepository, session: Session) -> list[CGC
 
 
 def get_coins(symbol: str, repo: CGCoinRepository) -> list[CGCoin]:
-    return repo.get(symbol)
+    coins = repo.get(symbol)
+    if not coins:
+        raise CoinNotFound(f"Symbol {symbol} not found in database")
+    return coins

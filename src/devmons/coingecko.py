@@ -25,6 +25,10 @@ class CoinAlreadyExists(Exception):
     pass
 
 
+class CoinNotFound(Exception):
+    pass
+
+
 def get_coins_data(symbol: str) -> list[CGCoin]:
     url = CG_API_URL + "/coins/list"
     res: list[dict] = requests.get(url).json()

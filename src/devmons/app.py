@@ -55,7 +55,7 @@ async def add_coins_from_symbol(
 
 
 @app.delete("/api/coins/{symbol}")
-async def delete_coins_from_symbol(symbol: str, session: Annotated[Session, Depends(get_session)]) -> dict:
+async def delete_coins_from_symbol(symbol: str, session: Annotated[Session, Depends(get_session)]):
     repo = CGCoinRepository(session)
     try:
         delete_coins(symbol, repo, session)

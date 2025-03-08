@@ -20,3 +20,6 @@ class CGCoinRepository:
 
     def get(self, symbol: str) -> list[CGCoin]:
         return self.session.query(CGCoin).filter(CGCoin.symbol == symbol).all()
+
+    def delete(self, symbol: str):
+        self.session.query(CGCoin).filter(CGCoin.symbol == symbol).delete()

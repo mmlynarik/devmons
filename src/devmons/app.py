@@ -8,7 +8,7 @@ from devmons.coingecko import CGCoin, CGCoinCreate, CoinAlreadyExists, CoinNotFo
 from devmons.db import get_session
 from devmons.orm import create_db_and_tables, start_orm_mappers
 from devmons.repository import CGCoinRepository
-from devmons.services import add_coins, get_coins
+from devmons.services import add_coins, delete_coins, get_coins
 
 
 @asynccontextmanager
@@ -26,7 +26,7 @@ async def root():
     return {"message": "Welcome to the FastAPI app!"}
 
 
-@app.get("/api/coins/symbol")
+@app.get("/api/coins/{symbol}")
 async def get_coins_from_symbol(
     symbol: str, session: Annotated[Session, Depends(get_session)]
 ) -> list[CGCoin]:
@@ -39,8 +39,8 @@ async def get_coins_from_symbol(
     return coins
 
 
-@app.post("/api/coins")
-async def add_new_coins(
+@app.post("/api/coins", status_code=201)
+async def add_coins_from_symbol(
     coin: CGCoinCreate, session: Annotated[Session, Depends(get_session)]
 ) -> list[CGCoin]:
     repo = CGCoinRepository(session)
@@ -52,3 +52,13 @@ async def add_new_coins(
         raise HTTPException(status_code=422, detail=f"Coin symbol {coin.symbol} already exists in database")
 
     return coins
+
+
+@app.delete("/api/coins/{symbol}")
+async def delete_coins_from_symbol(symbol: str, session: Annotated[Session, Depends(get_session)]) -> dict:
+    repo = CGCoinRepository(session)
+    try:
+        delete_coins(symbol, repo, session)
+    except CoinNotFound:
+        raise HTTPException(status_code=422, detail=f"Coin symbol {symbol} not found in database")
+    return {"message": "OK"}

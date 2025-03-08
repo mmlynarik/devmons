@@ -19,3 +19,8 @@ def get_coins(symbol: str, repo: CGCoinRepository) -> list[CGCoin]:
     if not coins:
         raise CoinNotFound(f"Symbol {symbol} not found in database")
     return coins
+
+
+def delete_coins(symbol: str, repo: CGCoinRepository, session: Session):
+    repo.delete(symbol)
+    session.commit()

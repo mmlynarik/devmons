@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Literal
 
 import requests
 
@@ -10,11 +11,18 @@ class CGCoin:
     id: str
     name: str
     symbol: str
+    current_price: float
+    market_cap: float
+    circulating_supply: float
+    total_supply: float
+    max_supply: float
+    last_updated: str  # needs fix
 
 
 @dataclass
 class CGCoinCreate:
     symbol: str
+    vs_currency: Literal["usd", "eur"]
 
 
 class InvalidCoinSymbol(Exception):
@@ -29,14 +37,34 @@ class CoinNotFound(Exception):
     pass
 
 
-def get_coins_data(symbol: str) -> list[CGCoin]:
+def get_coin_ids_from_symbol(symbol: str) -> list[str]:
     url = CG_API_URL + "/coins/list"
+    res: list[dict] = requests.get(url).json()
+    ids = []
+    for coin in res:
+        if coin["symbol"] == symbol:
+            ids.append(coin["id"])
+    if not ids:
+        raise CoinNotFound(f"Symbol {symbol} not found in database")
+    return ids
+
+
+def get_coins_data(ids: list[str], vs_currency: str) -> list[CGCoin]:
+    url = CG_API_URL + f"/coins/markets?ids={", ".join(ids)}&vs_currency={vs_currency}"
     res: list[dict] = requests.get(url).json()
     coins = []
     for coin in res:
-        if coin["symbol"] == symbol:
-            coins.append(CGCoin(**coin))
-
-    if not coins:
-        raise InvalidCoinSymbol(f"Symbol {symbol} is not a valid coin.")
+        coins.append(
+            CGCoin(
+                id=coin["id"],
+                name=coin["name"],
+                symbol=coin["symbol"],
+                current_price=coin["current_price"],
+                market_cap=coin["market_cap"],
+                circulating_supply=coin["circulating_supply"],
+                total_supply=coin["total_supply"],
+                max_supply=coin["max_supply"],
+                last_updated=coin["last_updated"],
+            )
+        )
     return coins

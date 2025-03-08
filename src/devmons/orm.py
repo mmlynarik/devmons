@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Table
+from sqlalchemy import Column, Float, String, Table
 from sqlalchemy.orm import registry
 
 from devmons.coingecko import CGCoin
@@ -13,6 +13,12 @@ cg_coin = Table(
     Column("id", String(256), primary_key=True),
     Column("name", String(256)),
     Column("symbol", String(30)),
+    Column("current_price", Float),
+    Column("market_cap", Float),
+    Column("circulating_supply", Float),
+    Column("total_supply", Float),
+    Column("max_supply", Float),
+    Column("last_updated", String(30)),
 )
 
 

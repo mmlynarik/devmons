@@ -25,6 +25,18 @@ class CGCoinCreate:
     vs_currency: Literal["usd", "eur"]
 
 
+@dataclass
+class CGCoinUpdate:
+    name: str
+    symbol: str
+    current_price: float
+    market_cap: float
+    circulating_supply: float
+    total_supply: float
+    max_supply: float
+    last_updated: str
+
+
 class InvalidCoinSymbol(Exception):
     pass
 

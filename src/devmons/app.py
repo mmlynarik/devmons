@@ -4,11 +4,18 @@ from typing import Annotated
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
-from devmons.coingecko import CGCoin, CGCoinCreate, CoinAlreadyExists, CoinNotFound, InvalidCoinSymbol
+from devmons.coingecko import (
+    CGCoin,
+    CGCoinCreate,
+    CGCoinUpdate,
+    CoinAlreadyExists,
+    CoinNotFound,
+    InvalidCoinSymbol,
+)
 from devmons.db import get_session
 from devmons.orm import create_db_and_tables, start_orm_mappers
 from devmons.repository import CGCoinRepository
-from devmons.services import add_coins, delete_coins, get_coins
+from devmons.services import add_coins, delete_coins, get_coins, update_coin
 
 
 @asynccontextmanager
@@ -62,3 +69,15 @@ async def delete_coins_from_symbol(symbol: str, session: Annotated[Session, Depe
     except CoinNotFound:
         raise HTTPException(status_code=404, detail=f"Coin symbol {symbol} not found in database")
     return {"message": "OK"}
+
+
+@app.put("/api/coins/{id}")
+async def update_coin_from_id(
+    id: str, coin: CGCoinUpdate, session: Annotated[Session, Depends(get_session)]
+) -> CGCoin:
+    repo = CGCoinRepository(session)
+    try:
+        updated_coin = update_coin(id, coin, repo, session)
+    except CoinNotFound:
+        raise HTTPException(status_code=404, detail=f"Coin with id {id} not found in database")
+    return updated_coin

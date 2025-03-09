@@ -18,8 +18,11 @@ class CGCoinRepository:
     def exists(self, symbol: str) -> bool:
         return bool(self.session.query(CGCoin).filter(CGCoin.symbol == symbol).all())
 
-    def get(self, symbol: str) -> list[CGCoin]:
+    def get_by_symbol(self, symbol: str) -> list[CGCoin]:
         return self.session.query(CGCoin).filter(CGCoin.symbol == symbol).all()
+
+    def get_by_id(self, id: str) -> CGCoin:
+        return self.session.query(CGCoin).filter(CGCoin.id == id).first()
 
     def delete(self, symbol: str):
         self.session.query(CGCoin).filter(CGCoin.symbol == symbol).delete()

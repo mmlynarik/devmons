@@ -1,9 +1,8 @@
 from dataclasses import dataclass
-from typing import Literal
 
 import requests
 
-from devmons.settings import CG_API_URL
+from devmons.settings import CG_API_URL, VS_CURRENCY
 
 
 @dataclass
@@ -16,13 +15,12 @@ class CGCoin:
     circulating_supply: float
     total_supply: float
     max_supply: float
-    last_updated: str  # needs fix
+    last_updated: str  # needs fix to be treated as timestamp
 
 
 @dataclass
 class CGCoinCreate:
     symbol: str
-    vs_currency: Literal["usd", "eur"]
 
 
 @dataclass
@@ -61,8 +59,9 @@ def get_coin_ids_from_symbol(symbol: str) -> list[str]:
     return ids
 
 
-def get_coins_data(ids: list[str], vs_currency: str) -> list[CGCoin]:
-    url = CG_API_URL + f"/coins/markets?ids={", ".join(ids)}&vs_currency={vs_currency}"
+def get_coins_data(ids: list[str], vs_currency: str = VS_CURRENCY) -> list[CGCoin]:
+    ids_string = ", ".join(ids)
+    url = CG_API_URL + f"/coins/markets?ids={ids_string}&vs_currency={vs_currency}"
     res: list[dict] = requests.get(url).json()
     coins = []
     for coin in res:

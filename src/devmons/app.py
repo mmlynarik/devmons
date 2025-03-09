@@ -34,7 +34,7 @@ async def get_coins_from_symbol(
     try:
         coins = get_coins(symbol, repo)
     except CoinNotFound:
-        raise HTTPException(status_code=422, detail=f"Coin symbol {symbol} not found in database")
+        raise HTTPException(status_code=404, detail=f"Coin symbol {symbol} not found in database")
 
     return coins
 
@@ -60,5 +60,5 @@ async def delete_coins_from_symbol(symbol: str, session: Annotated[Session, Depe
     try:
         delete_coins(symbol, repo, session)
     except CoinNotFound:
-        raise HTTPException(status_code=422, detail=f"Coin symbol {symbol} not found in database")
+        raise HTTPException(status_code=404, detail=f"Coin symbol {symbol} not found in database")
     return {"message": "OK"}

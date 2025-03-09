@@ -35,6 +35,7 @@ def delete_coins(symbol: str, repo: CGCoinRepository, session: Session):
     session.commit()
 
 
+# TODO: Refactor so that enumerating the updated attrs is not needed
 def update_coin(id: str, coin: CGCoinUpdate, repo: CGCoinRepository, session: Session) -> CGCoin:
     current_coin = repo.get_by_id(id)
     if not coin:

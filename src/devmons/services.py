@@ -38,18 +38,13 @@ def delete_coins(symbol: str, repo: CGCoinRepository, session: Session):
     session.commit()
 
 
-# TODO: Refactor so that enumerating the updated attrs is not needed
-def update_coin(id: str, coin: CGCoinUpdate, repo: CGCoinRepository, session: Session) -> CGCoin:
-    current_coin = repo.get_by_id(id)
-    if not coin:
-        raise CoinNotFound(f"Symbol with id {id} not found in database")
-    current_coin.name = coin.name
-    current_coin.symbol = coin.symbol
-    current_coin.circulating_supply = coin.circulating_supply
-    current_coin.current_price = coin.current_price
-    current_coin.market_cap = coin.market_cap
-    current_coin.max_supply = coin.max_supply
-    current_coin.total_supply = coin.total_supply
-    current_coin.last_updated = coin.last_updated
+def update_coin(id_: str, coin: CGCoinUpdate, repo: CGCoinRepository, session: Session) -> CGCoin:
+    current_coin = repo.get_by_id(id_)
+    if not current_coin:
+        raise CoinNotFound(f"Symbol with id {id_} not found in database")
+
+    for attr in coin.__dict__:
+        setattr(current_coin, attr, getattr(coin, attr))
+
     session.commit()
     return current_coin

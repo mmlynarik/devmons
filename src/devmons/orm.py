@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, String, Table
+from sqlalchemy import Column, DateTime, Float, String, Table
 from sqlalchemy.orm import registry
 
 from devmons.coingecko import CGCoin
@@ -18,7 +18,7 @@ cg_coin = Table(
     Column("circulating_supply", Float),
     Column("total_supply", Float),
     Column("max_supply", Float),
-    Column("last_updated", String(30)),
+    Column("last_updated", DateTime()),
 )
 
 

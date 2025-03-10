@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 
 import requests
 
@@ -15,7 +16,7 @@ class CGCoin:
     circulating_supply: float
     total_supply: float
     max_supply: float
-    last_updated: str  # needs fix to be treated as timestamp
+    last_updated: datetime  # needs fix to be treated as timestamp
 
 
 @dataclass
@@ -32,7 +33,7 @@ class CGCoinUpdate:
     circulating_supply: float
     total_supply: float
     max_supply: float
-    last_updated: str
+    last_updated: datetime
 
 
 class InvalidCoinSymbol(Exception):

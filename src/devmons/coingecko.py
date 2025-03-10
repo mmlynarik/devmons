@@ -16,7 +16,7 @@ class CGCoin:
     circulating_supply: float
     total_supply: float
     max_supply: float
-    last_updated: datetime  # needs fix to be treated as timestamp
+    last_updated: datetime
 
 
 @dataclass

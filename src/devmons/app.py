@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from typing import Annotated
 
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
+from httpx import AsyncClient
 from sqlalchemy.orm import Session
 
 from devmons.coingecko import (
@@ -12,7 +13,7 @@ from devmons.coingecko import (
     CoinNotFound,
     InvalidCoinSymbol,
 )
-from devmons.db import get_session
+from devmons.dependency import HTTPClient, get_db_session, get_http_client
 from devmons.orm import create_db_and_tables, start_orm_mappers
 from devmons.repository import CGCoinRepository
 from devmons.services import add_coins, delete_coin, get_coins, refresh_coins, update_coin
@@ -23,9 +24,14 @@ async def lifespan(app: FastAPI):
     start_orm_mappers()
     create_db_and_tables()
     yield
+    HTTPClient.aclose()
 
 
 app = FastAPI(lifespan=lifespan, title="CoinGecko Crypto API")
+
+
+DBSessionDep = Annotated[Session, Depends(get_db_session)]
+HTTPClientDep = Annotated[AsyncClient, Depends(get_http_client)]
 
 
 @app.get("/api/")
@@ -34,9 +40,7 @@ async def root():
 
 
 @app.get("/api/coins/{symbol}")
-async def get_coins_from_symbol(
-    symbol: str, session: Annotated[Session, Depends(get_session)]
-) -> list[CGCoin]:
+async def get_coins_from_symbol(symbol: str, session: DBSessionDep) -> list[CGCoin]:
     repo = CGCoinRepository(session)
     try:
         coins = get_coins(symbol, repo)
@@ -48,11 +52,11 @@ async def get_coins_from_symbol(
 
 @app.post("/api/coins", status_code=201)
 async def add_coins_from_symbol(
-    coin: CGCoinCreate, session: Annotated[Session, Depends(get_session)]
+    coin: CGCoinCreate, session: DBSessionDep, client: HTTPClientDep
 ) -> list[CGCoin]:
     repo = CGCoinRepository(session)
     try:
-        coins = add_coins(coin, repo, session)
+        coins = await add_coins(coin, repo, session, client)
     except InvalidCoinSymbol:
         raise HTTPException(status_code=422, detail=f"Coin symbol {coin.symbol} is not valid")
     except CoinAlreadyExists:
@@ -64,7 +68,7 @@ async def add_coins_from_symbol(
 
 
 @app.delete("/api/coins/{id}")
-async def delete_coin_from_id(id: str, session: Annotated[Session, Depends(get_session)]) -> dict:
+async def delete_coin_from_id(id: str, session: DBSessionDep) -> dict:
     repo = CGCoinRepository(session)
     try:
         delete_coin(id, repo, session)
@@ -74,12 +78,10 @@ async def delete_coin_from_id(id: str, session: Annotated[Session, Depends(get_s
 
 
 @app.put("/api/coins/{id}")
-async def update_coin_from_id(
-    id: str, coin: CGCoinUpdate, session: Annotated[Session, Depends(get_session)]
-) -> CGCoin:
+async def update_coin_from_id(id: str, new_coin_values: CGCoinUpdate, session: DBSessionDep) -> CGCoin:
     repo = CGCoinRepository(session)
     try:
-        updated_coin = update_coin(id, coin, repo, session)
+        updated_coin = update_coin(id, new_coin_values, repo, session)
     except CoinNotFound:
         raise HTTPException(status_code=404, detail=f"Coin with id {id} not found in database")
     return updated_coin
@@ -87,8 +89,8 @@ async def update_coin_from_id(
 
 @app.get("/api/coins/refresh/all")
 async def refresh_market_data(
-    background_tasks: BackgroundTasks, session: Annotated[Session, Depends(get_session)]
+    background_tasks: BackgroundTasks, session: DBSessionDep, client: HTTPClientDep
 ):
     repo = CGCoinRepository(session)
-    background_tasks.add_task(refresh_coins, repo=repo, session=session)
+    background_tasks.add_task(refresh_coins, repo=repo, session=session, client=client)
     return {"message": "Coins' market data update started in the background"}

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-import requests
+from httpx import AsyncClient
 
 from devmons.settings import CG_API_URL, VS_CURRENCY
 
@@ -48,24 +48,24 @@ class CoinNotFound(Exception):
     pass
 
 
-def get_coin_ids_from_symbol(symbol: str) -> list[str]:
+async def get_coin_ids_from_symbol(client: AsyncClient, symbol: str) -> list[str]:
     url = CG_API_URL + "/coins/list"
-    res: list[dict] = requests.get(url).json()
+    res = await client.get(url)
     ids = []
-    for coin in res:
+    for coin in res.json():
         if coin["symbol"] == symbol:
             ids.append(coin["id"])
     if not ids:
-        raise CoinNotFound(f"Symbol {symbol} not found in database")
+        raise InvalidCoinSymbol(f"Symbol {symbol} does not exist")
     return ids
 
 
-def get_coins_data(ids: list[str], vs_currency: str = VS_CURRENCY) -> list[CGCoin]:
+async def get_coins_data(client: AsyncClient, ids: list[str], vs_currency: str = VS_CURRENCY) -> list[CGCoin]:
     ids_string = ", ".join(ids)
-    url = CG_API_URL + f"/coins/markets?ids={ids_string}&vs_currency={vs_currency}"
-    res: list[dict] = requests.get(url).json()
+    url = CG_API_URL + "/coins/markets"
+    res = await client.get(url, params={"ids": ids_string, "vs_currency": vs_currency})
     coins = []
-    for coin in res:
+    for coin in res.json():
         coins.append(
             CGCoin(
                 id=coin["id"],

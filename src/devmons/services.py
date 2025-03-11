@@ -1,3 +1,4 @@
+from httpx import AsyncClient
 from sqlalchemy import update
 from sqlalchemy.orm import Session
 
@@ -13,9 +14,11 @@ from devmons.coingecko import (
 from devmons.repository import CGCoinRepository
 
 
-def add_coins(coin: CGCoinCreate, repo: CGCoinRepository, session: Session) -> list[CGCoin]:
-    ids = get_coin_ids_from_symbol(coin.symbol)
-    coins = get_coins_data(ids)
+async def add_coins(
+    coin: CGCoinCreate, repo: CGCoinRepository, session: Session, client: AsyncClient
+) -> list[CGCoin]:
+    ids = await get_coin_ids_from_symbol(client, coin.symbol)
+    coins = await get_coins_data(client, ids)
     if not repo.exists(coin.symbol):
         for c in coins:
             repo.add(c)
@@ -39,24 +42,25 @@ def delete_coin(id: str, repo: CGCoinRepository, session: Session):
     session.commit()
 
 
-def update_coin(id: str, coin: CGCoinUpdate, repo: CGCoinRepository, session: Session) -> CGCoin:
+def update_coin(id: str, new_coin_values: CGCoinUpdate, repo: CGCoinRepository, session: Session) -> CGCoin:
     current_coin = repo.get_by_id(id)
     if not current_coin:
         raise CoinNotFound(f"Coin with id {id} not found in database")
 
-    for attr in coin.__dict__:
-        setattr(current_coin, attr, getattr(coin, attr))
+    for attr in new_coin_values.__dict__:
+        setattr(current_coin, attr, getattr(new_coin_values, attr))
 
     session.commit()
     return current_coin
 
 
-def refresh_coins(repo: CGCoinRepository, session: Session):
+async def refresh_coins(repo: CGCoinRepository, session: Session, client: AsyncClient):
     current_coins = repo.list()
     if not current_coins:
         return
 
-    refreshed_coins = get_coins_data([c.id for c in current_coins])
+    ids = [c.id for c in current_coins]
+    refreshed_coins: list[CGCoin] = await get_coins_data(client, ids)
     session.execute(
         update(CGCoin),
         [

@@ -2,7 +2,7 @@ from sqlalchemy import Column, DateTime, Float, String, Table
 from sqlalchemy.orm import registry
 
 from devmons.coingecko import CGCoin
-from devmons.db import engine
+from devmons.dependency import engine
 
 mapper_registry = registry()
 

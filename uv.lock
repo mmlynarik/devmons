@@ -111,6 +111,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
+    { name = "httpx" },
     { name = "psycopg2-binary" },
     { name = "requests" },
     { name = "sqlalchemy" },
@@ -130,6 +131,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.8" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "requests", specifier = ">=2.32.3" },
     { name = "sqlalchemy", specifier = ">=2.0.38" },

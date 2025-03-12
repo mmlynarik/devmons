@@ -1,6 +1,5 @@
 import os
 
-# API
 CG_API_URL = "https://api.coingecko.com/api/v3"
 
 BACKEND_DB_HOST = os.getenv("POSTGRES_HOST", "postgres")

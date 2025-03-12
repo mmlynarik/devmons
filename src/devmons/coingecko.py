@@ -3,7 +3,7 @@ from datetime import datetime
 
 from httpx import AsyncClient
 
-from devmons.settings import CG_API_URL, VS_CURRENCY
+from devmons.settings import VS_CURRENCY
 
 
 @dataclass

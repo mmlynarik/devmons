@@ -1,9 +1,9 @@
 # Devmons Crypto API Assignment
 
 ## 1. Install virtual environment
-This project uses `uv` package and project manager to define project and its dependencies. To properly install virtual environment, uv executable needs to be present in the system. If it's not, you can download and install it through Makefile command:
+This project uses `uv` package and project manager to define project and its dependencies. To properly install virtual environment, uv executable needs to be present in the system. If it's not, you can download and install it through the following command:
 ```
-make uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 After cloning the repository, the virtual environment, along with all dependencies can be installed using the command:

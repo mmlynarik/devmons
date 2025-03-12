@@ -49,7 +49,7 @@ class CoinNotFound(Exception):
 
 
 async def get_coin_ids_from_symbol(client: AsyncClient, symbol: str) -> list[str]:
-    url = CG_API_URL + "/coins/list"
+    url = "/coins/list"
     res = await client.get(url)
     ids = []
     for coin in res.json():
@@ -62,7 +62,7 @@ async def get_coin_ids_from_symbol(client: AsyncClient, symbol: str) -> list[str
 
 async def get_coins_data(client: AsyncClient, ids: list[str], vs_currency: str = VS_CURRENCY) -> list[CGCoin]:
     ids_string = ", ".join(ids)
-    url = CG_API_URL + "/coins/markets"
+    url = "/coins/markets"
     res = await client.get(url, params={"ids": ids_string, "vs_currency": vs_currency})
     coins = []
     for coin in res.json():

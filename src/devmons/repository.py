@@ -1,4 +1,5 @@
-from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from devmons.coingecko import CGCoin
 from devmons.utils import get_logger
@@ -7,7 +8,7 @@ LOGGER = get_logger(__name__)
 
 
 class CGCoinRepository:
-    def __init__(self, session: Session):
+    def __init__(self, session: AsyncSession):
         self.session = session
 
     def add(self, coin: CGCoin) -> CGCoin:
@@ -15,17 +16,24 @@ class CGCoinRepository:
         LOGGER.info("New coin added to database: %s", coin)
         return coin
 
-    def exists(self, symbol: str) -> bool:
-        return bool(self.session.query(CGCoin).filter(CGCoin.symbol == symbol).all())
+    async def exists(self, symbol: str) -> bool:
+        stmt = select(CGCoin).where(CGCoin.symbol == symbol)
+        result = await self.session.execute(stmt)
+        return bool(result.scalars().all())
 
-    def get_by_symbol(self, symbol: str) -> list[CGCoin]:
-        return self.session.query(CGCoin).filter(CGCoin.symbol == symbol).all()
+    async def get_by_symbol(self, symbol: str) -> list[CGCoin]:
+        stmt = select(CGCoin).where(CGCoin.symbol == symbol)
+        result = await self.session.execute(stmt)
+        return result.scalars().all()
 
-    def get_by_id(self, id: str) -> CGCoin | None:
-        return self.session.query(CGCoin).filter(CGCoin.id == id).first()
+    async def get_by_id(self, id: str) -> CGCoin | None:
+        return await self.session.get(CGCoin, id)
 
-    def list(self) -> list[CGCoin]:
-        return self.session.query(CGCoin).all()
+    async def list(self) -> list[CGCoin]:
+        stmt = select(CGCoin)
+        result = await self.session.execute(stmt)
+        return result.scalars().all()
 
-    def delete(self, id: str):
-        self.session.query(CGCoin).filter(CGCoin.id == id).delete()
+    async def delete(self, id: str):
+        obj = await self.session.get(CGCoin, id)
+        await self.session.delete(obj)

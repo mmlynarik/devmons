@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
 from httpx import AsyncClient
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from devmons.coingecko import (
     CGCoin,
@@ -22,7 +22,7 @@ from devmons.services import add_coins, delete_coin, get_coins, refresh_coins, u
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     start_orm_mappers()
-    create_db_and_tables()
+    await create_db_and_tables()
     yield
     HTTPClient.aclose()
 
@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan, title="CoinGecko Crypto API")
 
 
-DBSessionDep = Annotated[Session, Depends(get_db_session)]
+DBSessionDep = Annotated[AsyncSession, Depends(get_db_session)]
 HTTPClientDep = Annotated[AsyncClient, Depends(get_http_client)]
 
 
@@ -43,7 +43,7 @@ async def root():
 async def get_coins_from_symbol(symbol: str, session: DBSessionDep) -> list[CGCoin]:
     repo = CGCoinRepository(session)
     try:
-        coins = get_coins(symbol, repo)
+        coins = await get_coins(symbol, repo)
     except CoinNotFound:
         raise HTTPException(status_code=404, detail=f"Coins with symbol {symbol} not found in database")
 
@@ -63,7 +63,6 @@ async def add_coins_from_symbol(
         raise HTTPException(
             status_code=422, detail=f"Coins with symbol {coin.symbol} already exist in database"
         )
-
     return coins
 
 
@@ -71,7 +70,7 @@ async def add_coins_from_symbol(
 async def delete_coin_from_id(id: str, session: DBSessionDep) -> dict:
     repo = CGCoinRepository(session)
     try:
-        delete_coin(id, repo, session)
+        await delete_coin(id, repo, session)
     except CoinNotFound:
         raise HTTPException(status_code=404, detail=f"Coin with id {id} not found in database")
     return {"message": "OK"}
@@ -81,7 +80,7 @@ async def delete_coin_from_id(id: str, session: DBSessionDep) -> dict:
 async def update_coin_from_id(id: str, new_coin_values: CGCoinUpdate, session: DBSessionDep) -> CGCoin:
     repo = CGCoinRepository(session)
     try:
-        updated_coin = update_coin(id, new_coin_values, repo, session)
+        updated_coin = await update_coin(id, new_coin_values, repo, session)
     except CoinNotFound:
         raise HTTPException(status_code=404, detail=f"Coin with id {id} not found in database")
     return updated_coin

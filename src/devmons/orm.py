@@ -18,7 +18,7 @@ cg_coin = Table(
     Column("circulating_supply", Float),
     Column("total_supply", Float),
     Column("max_supply", Float),
-    Column("last_updated", DateTime()),
+    Column("last_updated", DateTime(timezone=True)),
 )
 
 
@@ -26,5 +26,6 @@ def start_orm_mappers():
     mapper_registry.map_imperatively(CGCoin, cg_coin)
 
 
-def create_db_and_tables():
-    mapper_registry.metadata.create_all(engine)
+async def create_db_and_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(mapper_registry.metadata.create_all)

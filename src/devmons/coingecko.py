@@ -16,7 +16,7 @@ class CGCoin:
     circulating_supply: float
     total_supply: float
     max_supply: float
-    last_updated: datetime
+    last_updated: datetime | None
 
 
 @dataclass
@@ -76,7 +76,9 @@ async def get_coins_data(client: AsyncClient, ids: list[str], vs_currency: str =
                 circulating_supply=coin["circulating_supply"],
                 total_supply=coin["total_supply"],
                 max_supply=coin["max_supply"],
-                last_updated=coin["last_updated"],
+                last_updated=(
+                    datetime.fromisoformat(coin["last_updated"]) if coin["last_updated"] is not None else None
+                ),
             )
         )
     return coins

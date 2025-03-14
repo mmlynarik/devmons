@@ -11,7 +11,7 @@ class CGCoinRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    def add(self, coin: CGCoin) -> CGCoin:
+    async def add(self, coin: CGCoin) -> CGCoin:
         self.session.add(coin)
         LOGGER.info("New coin added to database: %s", coin)
         return coin

@@ -1,6 +1,5 @@
 .PHONY: venv, venvd, idev, iprod, bash, dev, prod, appb, app
 
-
 ##### DEV & DEPLOY #####
 dev:
 	fastapi run --host "0.0.0.0" --port 8000 --reload src/devmons/app.py

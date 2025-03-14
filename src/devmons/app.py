@@ -42,7 +42,6 @@ async def root():
 @app.get("/api/coins/{symbol}")
 async def get_coins_from_symbol(symbol: str, session: DBSessionDep) -> list[CGCoin]:
     repo = CGCoinRepository(session)
-
     try:
         coins = await get_coins(symbol, repo)
     except CoinNotFound:

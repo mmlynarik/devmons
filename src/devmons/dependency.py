@@ -3,8 +3,6 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from devmons.settings import BACKEND_DB_URL, CG_API_URL
 
-print(BACKEND_DB_URL)
-print("AAAA")
 engine = create_async_engine(BACKEND_DB_URL)
 
 Session = async_sessionmaker(engine, expire_on_commit=False)

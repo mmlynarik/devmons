@@ -82,7 +82,7 @@ tests/
 .dockerignore
 docker/
 Dockerfile
-docker-compose.yml
+docker-compose.*
 
 # k8s
 k8s/
@@ -118,3 +118,4 @@ ideas.txt
 experiments.txt
 
 experimental/
+.pre-commit-config.yaml

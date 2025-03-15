@@ -18,7 +18,7 @@ services:
   app:
     build:
       context: .
-      target: dev
+      target: prod
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -26,8 +26,6 @@ services:
       - POSTGRES_HOST=postgres
     ports:
       - 8000:8000
-    volumes:
-      - ./src/:/app/src/
     depends_on:
       - postgres
     networks:

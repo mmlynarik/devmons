@@ -25,6 +25,7 @@ async def add_coins(
             await repo.add(c)
         await session.commit()
         return coins
+
     raise CoinAlreadyExists(f"Symbol {coin.symbol} already exists in the database")
 
 

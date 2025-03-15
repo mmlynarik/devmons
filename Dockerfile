@@ -19,22 +19,37 @@ RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-dev --no-install-project
 
-COPY . /tmp
+
+FROM base AS builder-prod
+
 WORKDIR /tmp
+COPY . .
 
 RUN --mount=type=cache,target=/root/.cache \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-dev --no-editable
 
 
-FROM python:3.13.2-slim AS ci
+FROM base AS builder-dev
 WORKDIR /app
-COPY --from=base /app /app
+COPY . .
+
+RUN --mount=type=cache,target=/root/.cache \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked
+
+
+FROM python:3.13.2-slim AS dev
+WORKDIR /app
+COPY --from=builder-dev /app /app
 ENV PATH="/app/bin:$PATH"
 CMD ["fastapi", "dev", "--host", "0.0.0.0", "--port", "8000", "src/devmons/app.py"]
 
 
 FROM python:3.13.2-slim AS prod
-COPY --from=base /app /app
 WORKDIR /app
+COPY --from=builder-prod /app /app
 ENV PATH="/app/bin:$PATH"
 CMD ["fastapi", "run", "--host", "0.0.0.0", "--port", "8000", "lib/python3.13/site-packages/devmons/app.py"]

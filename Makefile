@@ -4,11 +4,19 @@
 dev:
 	fastapi run --host "0.0.0.0" --port 8000 --reload src/devmons/app.py
 
-build:
-	docker-compose build
+buildprod:
+	docker-compose -f docker-compose-prod.yaml build
 
-run:
-	docker-compose up
+runprod:
+	docker-compose -f docker-compose-prod.yaml up
+
+builddev:
+	docker-compose -f docker-compose-dev.yaml build
+
+rundev:
+	docker-compose -f docker-compose-dev.yaml up
+
+
 
 ##### REPOSITORY & VENV #####
 venv:

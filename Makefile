@@ -1,8 +1,10 @@
 .PHONY: venv, venvd, idev, iprod, bash, dev, prod, appb, app
 
 ##### DEV & DEPLOY #####
+
+# Requires postgres container running and setting BACKEND_DB_* env variables in .env file
 dev:
-	fastapi run --host "0.0.0.0" --port 8000 --reload src/devmons/app.py
+	fastapi dev --host "0.0.0.0" --port 8002 --reload src/devmons/app.py
 
 buildprod:
 	docker-compose -f docker-compose-prod.yaml build

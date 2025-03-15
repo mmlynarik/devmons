@@ -22,8 +22,8 @@ RUN --mount=type=cache,target=/root/.cache \
 
 FROM base AS builder-prod
 
-WORKDIR /tmp
-COPY . .
+COPY . /src
+WORKDIR /src
 
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=uv.lock,target=uv.lock \

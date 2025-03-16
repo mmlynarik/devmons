@@ -10,7 +10,7 @@ RUN apt-get update --fix-missing && \
 ENV PYTHONUNBUFFERED=True
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
-ENV UV_PROJECT_ENVIRONMENT=/app
+ENV UV_PROJECT_ENVIRONMENT=/app/.venv
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
@@ -32,6 +32,7 @@ RUN --mount=type=cache,target=/root/.cache \
 
 
 FROM base AS builder-dev
+
 WORKDIR /app
 COPY . .
 
@@ -44,12 +45,12 @@ RUN --mount=type=cache,target=/root/.cache \
 FROM python:3.13.2-slim AS dev
 WORKDIR /app
 COPY --from=builder-dev /app /app
-ENV PATH="/app/bin:$PATH"
+ENV PATH="/app/.venv/bin:$PATH"
 CMD ["fastapi", "dev", "--host", "0.0.0.0", "--port", "8000", "src/devmons/app.py"]
 
 
 FROM python:3.13.2-slim AS prod
 WORKDIR /app
 COPY --from=builder-prod /app /app
-ENV PATH="/app/bin:$PATH"
-CMD ["fastapi", "run", "--host", "0.0.0.0", "--port", "8000", "lib/python3.13/site-packages/devmons/app.py"]
+ENV PATH="/app/.venv/bin/:$PATH"
+CMD ["fastapi", "run", "--host", "0.0.0.0", "--port", "8000", ".venv/lib/python3.13/site-packages/devmons/app.py"]

@@ -6,6 +6,9 @@
 dev:
 	fastapi dev --host "0.0.0.0" --port 8002 --reload src/devmons/app.py
 
+db:
+	docker run -d --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -v postgres_data:/var/lib/postgresql/data postgres:15
+
 buildprod:
 	docker-compose -f docker-compose-prod.yaml build
 

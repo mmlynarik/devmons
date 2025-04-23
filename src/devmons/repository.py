@@ -2,6 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from devmons.coingecko import CGCoin
+from devmons.users import User, UserCreate
 from devmons.utils import get_logger
 
 LOGGER = get_logger(__name__)
@@ -11,10 +12,9 @@ class CGCoinRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def add(self, coin: CGCoin) -> CGCoin:
+    async def add(self, coin: CGCoin):
         self.session.add(coin)
         LOGGER.info("New coin added to database: %s", coin)
-        return coin
 
     async def exists(self, symbol: str) -> bool:
         stmt = select(CGCoin).where(CGCoin.symbol == symbol)
@@ -37,3 +37,18 @@ class CGCoinRepository:
     async def delete(self, id: str):
         obj = await self.session.get(CGCoin, id)
         await self.session.delete(obj)
+
+
+
+class UsersRepository:
+    def __init__(self, session: AsyncSession):
+        self.session = session
+
+    async def add(self, user: UserCreate):
+        self.session.add(user)
+        LOGGER.info("New user added to database: %s", user)
+
+    async def get(self, email: str) -> User | None:
+        stmt = select(User).where(User.email == email)
+        result = await self.session.execute(stmt)
+        return result.scalars().one_or_none()

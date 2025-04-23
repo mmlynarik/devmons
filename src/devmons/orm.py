@@ -1,8 +1,9 @@
-from sqlalchemy import Column, DateTime, Float, String, Table
+from sqlalchemy import Column, DateTime, Float, String, Table, Integer
 from sqlalchemy.orm import registry
 
 from devmons.coingecko import CGCoin
 from devmons.dependency import engine
+from devmons.users import User
 
 mapper_registry = registry()
 
@@ -22,8 +23,19 @@ cg_coin = Table(
 )
 
 
+user = Table(
+    "user",
+    mapper_registry.metadata,
+    Column("id", Integer, primary_key=True),
+    Column("email", String(256)),
+    Column("password", String(256)),
+    Column("salt", String(64)),
+)
+
+
 def start_orm_mappers():
     mapper_registry.map_imperatively(CGCoin, cg_coin)
+    mapper_registry.map_imperatively(User, user)
 
 
 async def create_db_and_tables():

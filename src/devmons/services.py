@@ -1,7 +1,6 @@
 from httpx import AsyncClient
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from devmons.coingecko import (
     CGCoin,
     CGCoinCreate,
@@ -11,7 +10,8 @@ from devmons.coingecko import (
     get_coin_ids_from_symbol,
     get_coins_data,
 )
-from devmons.repository import CGCoinRepository
+from devmons.repository import CGCoinRepository, UsersRepository
+from devmons.users import User, UserAlreadyExists, UserCreate, UserCreated
 
 
 async def add_coins(
@@ -81,3 +81,18 @@ async def refresh_coins(repo: CGCoinRepository, session: AsyncSession, client: A
         ],
     )
     await session.commit()
+
+
+async def get_user_by_email(email: str, repo: UsersRepository) -> User | None:
+    return await repo.get(email=email)
+
+
+async def register_user(user_create: UserCreate, repo: UsersRepository, session: AsyncSession) -> UserCreated:
+    existing_user = await get_user_by_email(user_create.email, repo=repo)
+    if existing_user:
+        raise UserAlreadyExists("User with email {user_create.email} already exists")
+    user = User(id=None, email=user_create.email, password=user_create.password, salt=user_create.salt)
+    await repo.add(user=user)
+    await session.commit()
+    await session.refresh(user)
+    return UserCreated(user.id, user.email)

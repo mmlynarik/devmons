@@ -124,21 +124,31 @@ async def register_user(user_create: UserCreate, session: DBSessionDep) -> UserC
     return user
 
 
-@app.get("/users")
-async def get_user(session: DBSessionDep, email: str | None = None, github_id: int | None = None) -> User:
+@app.get("/users/id/{id}")
+async def get_user_by_id(id: int, session: DBSessionDep) -> User:
     repo = UsersRepository(session)
-    if (email and github_id) or (not email and not github_id):
-        raise HTTPException(
-            status_code=400, detail="Exactly one query param (email or github_id) must be supplied."
-        )
-    if email:
-        user = await services.get_user_by_email(email=email, repo=repo)
-        if not user:
-            raise HTTPException(status_code=404, detail=f"User with email {email} not found")
+    user = await services.get_user_by_id(id=id, repo=repo)
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User with id {id} not found")
 
-    elif github_id:
-        user = await services.get_user_by_github_id(github_id=github_id, repo=repo)
-        if not user:
-            raise HTTPException(status_code=404, detail=f"User with github_id {github_id} not found")
+    return user
+
+
+@app.get("/users/email/{email}")
+async def get_user_by_email(email: str, session: DBSessionDep) -> User:
+    repo = UsersRepository(session)
+    user = await services.get_user_by_email(email=email, repo=repo)
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User with email {email} not found")
+
+    return user
+
+
+@app.get("/users/github/{github_id}")
+async def get_user_by_github(github_id: int, session: DBSessionDep) -> User:
+    repo = UsersRepository(session)
+    user = await services.get_user_by_github_id(github_id=github_id, repo=repo)
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User with github id {github_id} not found")
 
     return user

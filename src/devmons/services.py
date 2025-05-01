@@ -87,6 +87,10 @@ async def get_user_by_email(email: str, repo: UsersRepository) -> User | None:
     return await repo.get_by_email(email=email)
 
 
+async def get_user_by_id(id: int, repo: UsersRepository) -> User | None:
+    return await repo.get_by_id(id=id)
+
+
 async def get_user_by_github_id(github_id: int, repo: UsersRepository) -> User | None:
     return await repo.get_by_github_id(github_id=github_id)
 

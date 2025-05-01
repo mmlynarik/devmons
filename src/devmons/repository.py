@@ -57,3 +57,6 @@ class UsersRepository:
         stmt = select(User).where(User.github_id == github_id)
         result = await self.session.execute(stmt)
         return result.scalars().one_or_none()
+
+    async def get_by_id(self, id: int) -> User | None:
+        return await self.session.get(User, id)

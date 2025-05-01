@@ -7,6 +7,7 @@ from fastapi.responses import JSONResponse
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from devmons import services
 from devmons.coingecko import (
     CGCoin,
     CGCoinCreate,
@@ -18,9 +19,8 @@ from devmons.coingecko import (
 from devmons.dependency import HTTPClient, get_db_session, get_http_client
 from devmons.orm import create_db_and_tables, start_orm_mappers
 from devmons.repository import CGCoinRepository, UsersRepository
-from devmons import services
 from devmons.services import add_coins, delete_coin, get_coins, refresh_coins, update_coin
-from devmons.users import User, UserCreated, UserAlreadyExists, UserCreate
+from devmons.users import User, UserAlreadyExists, UserCreate, UserCreated
 
 
 @asynccontextmanager
@@ -106,7 +106,6 @@ async def update_coin_from_id(id: str, new_coin_values: CGCoinUpdate, session: D
 async def refresh_market_data(
     background_tasks: BackgroundTasks, session: DBSessionDep, client: HTTPClientDep
 ):
-
     repo = CGCoinRepository(session)
     background_tasks.add_task(refresh_coins, repo=repo, session=session, client=client)
     return {"message": "Coins' market data update started in the background"}
@@ -115,17 +114,31 @@ async def refresh_market_data(
 @app.post("/users", response_class=JSONResponse)
 async def register_user(user_create: UserCreate, session: DBSessionDep) -> UserCreated:
     repo = UsersRepository(session)
+    register_fn = services.register_user_by_email if user_create.email else services.register_user_by_github
     try:
-        user = await services.register_user(user_create=user_create, repo=repo, session=session)
+        user = await register_fn(user_create=user_create, repo=repo, session=session)
     except UserAlreadyExists:
-        raise HTTPException(status_code=409, detail=f"User with email {user_create.email} already exists")
+        identity_id = user_create.email if user_create.email else user_create.github_id
+        identity_name = "email" if user_create.email else "github_id"
+        raise HTTPException(status_code=409, detail=f"User with {identity_name} {identity_id} already exists")
     return user
 
 
-@app.get("/users/{email}")
-async def get_user_by_email(email: str, session: DBSessionDep) -> User:
+@app.get("/users")
+async def get_user(session: DBSessionDep, email: str | None = None, github_id: int | None = None) -> User:
     repo = UsersRepository(session)
-    user = await services.get_user_by_email(email=email, repo=repo)
-    if user:
-        return user
-    raise HTTPException(status_code=404, detail=f"User with email {email} not found")
+    if (email and github_id) or (not email and not github_id):
+        raise HTTPException(
+            status_code=400, detail="Exactly one query param (email or github_id) must be supplied."
+        )
+    if email:
+        user = await services.get_user_by_email(email=email, repo=repo)
+        if not user:
+            raise HTTPException(status_code=404, detail=f"User with email {email} not found")
+
+    elif github_id:
+        user = await services.get_user_by_github_id(github_id=github_id, repo=repo)
+        if not user:
+            raise HTTPException(status_code=404, detail=f"User with github_id {github_id} not found")
+
+    return user

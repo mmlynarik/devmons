@@ -48,7 +48,12 @@ class UsersRepository:
         self.session.add(user)
         LOGGER.info("New user added to database: %s", user)
 
-    async def get(self, email: str) -> User | None:
+    async def get_by_email(self, email: str) -> User | None:
         stmt = select(User).where(User.email == email)
+        result = await self.session.execute(stmt)
+        return result.scalars().one_or_none()
+
+    async def get_by_github_id(self, github_id: int) -> User | None:
+        stmt = select(User).where(User.github_id == github_id)
         result = await self.session.execute(stmt)
         return result.scalars().one_or_none()

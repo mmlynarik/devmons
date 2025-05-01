@@ -30,6 +30,8 @@ user = Table(
     Column("email", String(256)),
     Column("password", String(256)),
     Column("salt", String(64)),
+    Column("github_id", Integer),
+    Column("github_name", String(64))
 )
 
 

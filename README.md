@@ -11,10 +11,10 @@ After cloning the repository, the virtual environment can be set up using the co
 uv sync
 ```
 
-## 2. Run the FastAPI app in development mode
-The API application can be run using Makefile command
+## 2. Run the FastAPI app in development mode 
+The API application can be run using Makefile command which will spin up two docker containers - one for python app and one for postgres database
 ```
-make dev
+make rundev
 ```
 
 ## 3. API docs and usage:

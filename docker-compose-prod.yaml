@@ -1,4 +1,4 @@
-name: devmons-prod
+name: vce-prod
 services:
   postgres:
     restart: always

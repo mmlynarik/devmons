@@ -46,11 +46,11 @@ FROM python:3.13.2-slim AS dev
 WORKDIR /app
 COPY --from=builder-dev /app /app
 ENV PATH="/app/.venv/bin:$PATH"
-CMD ["fastapi", "dev", "--host", "0.0.0.0", "--port", "8000", "src/devmons/app.py"]
+CMD ["fastapi", "dev", "--host", "0.0.0.0", "--port", "8000", "src/vce/app.py"]
 
 
 FROM python:3.13.2-slim AS prod
 WORKDIR /app
 COPY --from=builder-prod /app /app
 ENV PATH="/app/.venv/bin/:$PATH"
-CMD ["fastapi", "run", "--host", "0.0.0.0", "--port", "8000", ".venv/lib/python3.13/site-packages/devmons/app.py"]
+CMD ["fastapi", "run", "--host", "0.0.0.0", "--port", "8000", ".venv/lib/python3.13/site-packages/vce/app.py"]

@@ -25,7 +25,7 @@ dev = [
 ]
 
 [project.scripts]
-devmons = "devmons:main"
+vce = "vce:main"
 
 [build-system]
 requires = ["hatchling"]

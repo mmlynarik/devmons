@@ -1,6 +1,7 @@
 from httpx import AsyncClient
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from devmons.coingecko import (
     CGCoin,
     CGCoinCreate,
@@ -11,7 +12,7 @@ from devmons.coingecko import (
     get_coins_data,
 )
 from devmons.repository import CGCoinRepository, UsersRepository
-from devmons.users import User, UserAlreadyExists, UserCreate, UserCreated
+from devmons.users import User, UserAlreadyExists, UserCreateByEmail, UserCreateByGithub, UserCreated
 
 
 async def add_coins(
@@ -96,7 +97,7 @@ async def get_user_by_github_id(github_id: int, repo: UsersRepository) -> User |
 
 
 async def register_user_by_email(
-    user_create: UserCreate, repo: UsersRepository, session: AsyncSession
+    user_create: UserCreateByEmail, repo: UsersRepository, session: AsyncSession
 ) -> UserCreated:
     existing_user = await get_user_by_email(user_create.email, repo=repo)
     if existing_user:
@@ -112,11 +113,11 @@ async def register_user_by_email(
     await repo.add(user=user)
     await session.commit()
     await session.refresh(user)
-    return UserCreated(user.id)
+    return UserCreated(user.id)  # type: ignore
 
 
 async def register_user_by_github(
-    user_create: UserCreate, repo: UsersRepository, session: AsyncSession
+    user_create: UserCreateByGithub, repo: UsersRepository, session: AsyncSession
 ) -> UserCreated:
     existing_user = await get_user_by_github_id(user_create.github_id, repo=repo)
     if existing_user:
@@ -132,4 +133,4 @@ async def register_user_by_github(
     await repo.add(user=user)
     await session.commit()
     await session.refresh(user)
-    return UserCreated(user.id)
+    return UserCreated(user.id)  # type: ignore

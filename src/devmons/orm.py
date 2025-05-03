@@ -1,8 +1,8 @@
-from sqlalchemy import Column, DateTime, Float, String, Table, Integer
+from sqlalchemy import Column, DateTime, Float, Integer, String, Table
 from sqlalchemy.orm import registry
 
 from devmons.coingecko import CGCoin
-from devmons.dependency import engine
+from devmons.di import engine
 from devmons.users import User
 
 mapper_registry = registry()
@@ -31,7 +31,7 @@ user = Table(
     Column("password", String(256)),
     Column("salt", String(64)),
     Column("github_id", Integer),
-    Column("github_name", String(64))
+    Column("github_name", String(64)),
 )
 
 

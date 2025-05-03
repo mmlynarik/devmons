@@ -16,11 +16,11 @@ from devmons.coingecko import (
     CoinNotFound,
     InvalidCoinSymbol,
 )
-from devmons.dependency import HTTPClient, get_db_session, get_http_client
+from devmons.di import HTTPClient, get_db_session, get_http_client
 from devmons.orm import create_db_and_tables, start_orm_mappers
 from devmons.repository import CGCoinRepository, UsersRepository
 from devmons.services import add_coins, delete_coin, get_coins, refresh_coins, update_coin
-from devmons.users import User, UserAlreadyExists, UserCreate, UserCreated
+from devmons.users import User, UserAlreadyExists, UserCreateByEmail, UserCreateByGithub, UserCreated
 
 
 @asynccontextmanager
@@ -111,16 +111,25 @@ async def refresh_market_data(
     return {"message": "Coins' market data update started in the background"}
 
 
-@app.post("/users", response_class=JSONResponse)
-async def register_user(user_create: UserCreate, session: DBSessionDep) -> UserCreated:
+@app.post("/users/email", response_class=JSONResponse)
+async def register_user_by_email(user_create: UserCreateByEmail, session: DBSessionDep) -> UserCreated:
     repo = UsersRepository(session)
-    register_fn = services.register_user_by_email if user_create.email else services.register_user_by_github
     try:
-        user = await register_fn(user_create=user_create, repo=repo, session=session)
+        user = await services.register_user_by_email(user_create=user_create, repo=repo, session=session)
     except UserAlreadyExists:
-        identity_id = user_create.email if user_create.email else user_create.github_id
-        identity_name = "email" if user_create.email else "github_id"
-        raise HTTPException(status_code=409, detail=f"User with {identity_name} {identity_id} already exists")
+        raise HTTPException(status_code=409, detail=f"User with email {user_create.email} already exists")
+    return user
+
+
+@app.post("/users/github", response_class=JSONResponse)
+async def register_user_by_github(user_create: UserCreateByGithub, session: DBSessionDep) -> UserCreated:
+    repo = UsersRepository(session)
+    try:
+        user = await services.register_user_by_github(user_create=user_create, repo=repo, session=session)
+    except UserAlreadyExists:
+        raise HTTPException(
+            status_code=409, detail=f"User with github_id {user_create.github_id} already exists"
+        )
     return user
 
 

@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from devmons.coingecko import CGCoin
-from devmons.users import User, UserCreate
+from devmons.users import User
 from devmons.utils import get_logger
 
 LOGGER = get_logger(__name__)
@@ -39,12 +39,11 @@ class CGCoinRepository:
         await self.session.delete(obj)
 
 
-
 class UsersRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def add(self, user: UserCreate):
+    async def add(self, user: User):
         self.session.add(user)
         LOGGER.info("New user added to database: %s", user)
 

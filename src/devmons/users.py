@@ -12,12 +12,16 @@ class User:
 
 
 @dataclass
-class UserCreate:
-    email: str | None = None
-    password: str | None = None
-    salt: str | None = None
-    github_id: int | None = None
-    github_name: str | None = None
+class UserCreateByEmail:
+    email: str
+    password: str
+    salt: str
+
+
+@dataclass
+class UserCreateByGithub:
+    github_id: int
+    github_name: str
 
 
 @dataclass

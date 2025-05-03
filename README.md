@@ -1,20 +1,20 @@
-# Devmons Crypto API Assignment
+# Virtual Crypto Exchange (VCE) Backend
 
 ## 1. Install virtual environment
-This project uses `uv` package and project manager to define project and its dependencies. To properly install virtual environment, uv executable needs to be present in the system. If it's not, you can download and install it through the following command:
+This project uses `uv` package manager. To properly install virtual environment, uv executable needs to be present in the system. If it's not, you can download and install it using curl:
 ```
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-After cloning the repository, the virtual environment, along with all dependencies can be installed using the command:
+After cloning the repository, the virtual environment can be set up using the command:
 ```
 uv sync
 ```
 
-## 2. Run the FastAPI app
-The API application can be run using the docker compose command, which spins up two containers - the postgres database and the python application:
+## 2. Run the FastAPI app in development mode
+The API application can be run using Makefile command
 ```
-docker-compose up
+make dev
 ```
 
 ## 3. API docs and usage:

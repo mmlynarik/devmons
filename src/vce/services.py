@@ -2,7 +2,7 @@ from httpx import AsyncClient
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from devmons.coingecko import (
+from vce.coingecko import (
     CGCoin,
     CGCoinCreate,
     CGCoinUpdate,
@@ -11,8 +11,8 @@ from devmons.coingecko import (
     get_coin_ids_from_symbol,
     get_coins_data,
 )
-from devmons.repository import CGCoinRepository, UsersRepository
-from devmons.users import User, UserAlreadyExists, UserCreateByEmail, UserCreateByGithub, UserCreated
+from vce.repository import CGCoinRepository, UsersRepository
+from vce.users import User, UserAlreadyExists, UserCreateByEmail, UserCreateByGithub, UserCreated
 
 
 async def add_coins(

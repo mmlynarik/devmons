@@ -7,8 +7,8 @@ from fastapi.responses import JSONResponse
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from devmons import services
-from devmons.coingecko import (
+from vce import services
+from vce.coingecko import (
     CGCoin,
     CGCoinCreate,
     CGCoinUpdate,
@@ -16,11 +16,11 @@ from devmons.coingecko import (
     CoinNotFound,
     InvalidCoinSymbol,
 )
-from devmons.di import HTTPClient, get_db_session, get_http_client
-from devmons.orm import create_db_and_tables, start_orm_mappers
-from devmons.repository import CGCoinRepository, UsersRepository
-from devmons.services import add_coins, delete_coin, get_coins, refresh_coins, update_coin
-from devmons.users import User, UserAlreadyExists, UserCreateByEmail, UserCreateByGithub, UserCreated
+from vce.di import HTTPClient, get_db_session, get_http_client
+from vce.orm import create_db_and_tables, start_orm_mappers
+from vce.repository import CGCoinRepository, UsersRepository
+from vce.services import add_coins, delete_coin, get_coins, refresh_coins, update_coin
+from vce.users import User, UserAlreadyExists, UserCreateByEmail, UserCreateByGithub, UserCreated
 
 
 @asynccontextmanager

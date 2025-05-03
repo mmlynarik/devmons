@@ -1,9 +1,9 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from devmons.coingecko import CGCoin
-from devmons.users import User
-from devmons.utils import get_logger
+from vce.coingecko import CGCoin
+from vce.users import User
+from vce.utils import get_logger
 
 LOGGER = get_logger(__name__)
 

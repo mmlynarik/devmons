@@ -1,9 +1,9 @@
 from sqlalchemy import Column, DateTime, Float, Integer, String, Table
 from sqlalchemy.orm import registry
 
-from devmons.coingecko import CGCoin
-from devmons.di import engine
-from devmons.users import User
+from vce.coingecko import CGCoin
+from vce.di import engine
+from vce.users import User
 
 mapper_registry = registry()
 

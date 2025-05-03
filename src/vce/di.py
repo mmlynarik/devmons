@@ -1,7 +1,7 @@
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from devmons.settings import BACKEND_DB_URL, CG_API_URL
+from vce.settings import BACKEND_DB_URL, CG_API_URL
 
 engine = create_async_engine(BACKEND_DB_URL)
 

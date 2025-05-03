@@ -1,7 +1,7 @@
 [project]
-name = "devmons"
+name = "VCE"
 version = "0.1.0"
-description = "Devmons interview project"
+description = "Virtual Crypto Exchange project"
 readme = "README.md"
 authors = [
     { name = "Miroslav Mlynarik", email = "miroslav.mlynarik@gmail.com" }
@@ -9,10 +9,8 @@ authors = [
 requires-python = "==3.13.*"
 dependencies = [
     "asyncpg>=0.30.0",
-    "bcrypt>=4.3.0",
     "fastapi[standard]>=0.115.8",
     "httpx>=0.28.1",
-    "passlib>=1.7.4",
     "sqlalchemy[asyncio]>=2.0.38",
 ]
 

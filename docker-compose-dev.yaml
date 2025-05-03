@@ -23,7 +23,7 @@ services:
       - BACKEND_DB_PASSWORD=postgres
       - BACKEND_DB_HOST=postgres
     ports:
-      - 8001:8000
+      - 8000:8000
     volumes:
       - ./src/:/app/src/
     depends_on:

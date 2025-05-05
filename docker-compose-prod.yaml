@@ -32,11 +32,12 @@ services:
     image: docker.io/miromlynarik/vce-web:prod
     container_name: web
     environment:
-      - BACKEND_API_URL=host.docker.internal:8000/api
+      - BACKEND_API_URL=http://api:8000/api
       - JWT_SECRET_KEY=G349D3/i12FVOZ2QyvQ8yZPTppgmw8XFBH6VTCkAofE=
       - GITHUB_CLIENT_ID=Ov23liNAnBUWffr5VN7O
       - GITHUB_CLIENT_SECRET=15ef5fc0a21687a031cf5d0206f5749493df232c
-      - GITHUB_REDIRECT_URL=host.docker.internal:3000/oauth/github
+      - GITHUB_REDIRECT_URL=http://localhost:3000/api/oauth/github
+      - NODE_ENV=production
     ports:
       - 3000:3000
     depends_on:

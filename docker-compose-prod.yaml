@@ -36,7 +36,7 @@ services:
       - JWT_SECRET_KEY=G349D3/i12FVOZ2QyvQ8yZPTppgmw8XFBH6VTCkAofE=
       - GITHUB_CLIENT_ID=Ov23liNAnBUWffr5VN7O
       - GITHUB_CLIENT_SECRET=15ef5fc0a21687a031cf5d0206f5749493df232c
-      - GITHUB_REDIRECT_URL=http://localhost:3000/api/oauth/github
+      - GITHUB_REDIRECT_URL=http://mmlynarik.com:3000/api/oauth/github
       - NODE_ENV=production
     ports:
       - 3000:3000

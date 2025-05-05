@@ -48,7 +48,7 @@ services:
       - app-network
 
 volumes:
-  postgres_data_prod:
+  prod_db:
 
 networks:
   app-network:

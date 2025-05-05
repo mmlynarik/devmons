@@ -1,4 +1,3 @@
-name: vce-prod
 services:
   postgres:
     restart: always
@@ -13,10 +12,9 @@ services:
     networks:
       - app-network
 
-  app:
-    build:
-      context: .
-      target: prod
+  api:
+    image: docker.io/miromlynarik/vce-api:prod
+    container_name: api
     environment:
       - BACKEND_DB_USER=postgres
       - BACKEND_DB_NAME=postgres
@@ -26,6 +24,25 @@ services:
       - 8000:8000
     depends_on:
       - postgres
+    restart: always
+    networks:
+      - app-network
+
+  web:
+    image: docker.io/miromlynarik/vce-web:prod
+    container_name: web
+    environment:
+      - BACKEND_API_URL=host.docker.internal:8000/api
+      - JWT_SECRET_KEY=G349D3/i12FVOZ2QyvQ8yZPTppgmw8XFBH6VTCkAofE=
+      - GITHUB_CLIENT_ID=Ov23liNAnBUWffr5VN7O
+      - GITHUB_CLIENT_SECRET=15ef5fc0a21687a031cf5d0206f5749493df232c
+      - GITHUB_REDIRECT_URL=host.docker.internal:3000/oauth/github
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+      - api
+    restart: always
     networks:
       - app-network
 

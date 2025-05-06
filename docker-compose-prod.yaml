@@ -55,11 +55,13 @@ services:
       - 443:443
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
     networks:
       - caddy
 
 volumes:
   prod_db:
+  caddy_data:
 
 networks:
   caddy:

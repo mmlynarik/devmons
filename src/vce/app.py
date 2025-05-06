@@ -36,6 +36,7 @@ app = FastAPI(root_path="/api", lifespan=lifespan, title="CoinGecko Crypto API")
 origins = [
     "http://localhost:3000",
     "https://localhost:3000",
+    "http://mmlynarik.com:3000",
 ]
 
 app.add_middleware(

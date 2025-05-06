@@ -11,7 +11,7 @@ services:
     volumes:
       - prod_db:/var/lib/postgresql/data
     networks:
-      - app-network
+      - caddy
 
   api:
     image: docker.io/miromlynarik/vce-api:prod
@@ -27,7 +27,7 @@ services:
       - postgres
     restart: always
     networks:
-      - app-network
+      - caddy
 
   web:
     image: docker.io/miromlynarik/vce-web:prod
@@ -45,11 +45,22 @@ services:
       - api
     restart: always
     networks:
-      - app-network
+      - caddy
+
+  caddy:
+    image: caddy:2.10
+    restart: unless-stopped
+    command: caddy reverse-proxy --from https://mmlynarik.com:443 --to http://localhost:3000
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - caddy
 
 volumes:
   prod_db:
+  caddy_data:
+  caddy_config:
 
 networks:
-  app-network:
-    driver: bridge
+  caddy:

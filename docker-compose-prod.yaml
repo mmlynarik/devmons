@@ -59,8 +59,6 @@ services:
 
 volumes:
   prod_db:
-  caddy_data:
-  caddy_config:
 
 networks:
   caddy:

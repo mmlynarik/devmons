@@ -1,4 +1,4 @@
-# Virtual Crypto Exchange (VCE) Backend
+# Virtual Crypto Exchange (VCE) Backend 
 
 ## 1. Install virtual environment
 This project uses `uv` package manager. To properly install virtual environment, uv executable needs to be present in the system. If it's not, you can download and install it using curl:
